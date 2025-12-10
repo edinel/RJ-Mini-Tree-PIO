@@ -12,14 +12,14 @@
 
 
 #define DATA_PIN_1    27
-#define NUM_LEDS_1    1000
+#define NUM_LEDS_1    160
 
-#define LED_TYPE    WS2812
+#define LED_TYPE    WS2812  
 #define COLOR_ORDER GRB
-#define BRIGHTNESS          125  
+#define BRIGHTNESS          100  
 #define FRAMES_PER_SECOND  120
 #define NUM_FUNCTIONS 4
-#define hostname "BackYard-Xmas-Arduino"
+#define hostname "RJ-Mini-Tree"
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
@@ -388,18 +388,25 @@ bool RadioProcessor (Print& output, const char *param){
 void UpdatePalette (){
  if (gButtonClicked == "red"){
     gCurrentPalette = RetroC9_p;
+    Serial.println ("REd");
   }else if (gButtonClicked == "blue"){
     gCurrentPalette = BlueWhite_p;
+    Serial.println ("Blue");
   }else if (gButtonClicked == "green"){
     gCurrentPalette = RedGreenWhite_p;
+    Serial.println ("green");
   }else if (gButtonClicked == "yellow"){
     gCurrentPalette = PartyColors_p;
+    Serial.println ("yellow");
   }else if (gButtonClicked == "cyan"){
     gCurrentPalette = Snow_p;
+    Serial.println ("cyan");
   }else if (gButtonClicked == "white"){
     gCurrentPalette = FairyLight_p;
+    Serial.println ("white");
   }else if (gButtonClicked == "orange"){
     gCurrentPalette = Halloween_p; 
+    Serial.println ("Orange");
   }else{ //we're in an unknown state or "off"
     gCurrentPalette = Black_p;
   }
@@ -472,20 +479,28 @@ void loop() {
             // Get info about which button was clicked and set the global variable for it.
             if (gHeader.indexOf("GET /update?color=off") >= 0) {
               gButtonClicked = "off";
+                Serial.println ("Off");
             }else if (gHeader.indexOf("GET /update?color=red") >= 0) {
               gButtonClicked = "red";
+              Serial.println ("Red");  
             }else if (gHeader.indexOf("GET /update?color=blue") >= 0) {
               gButtonClicked = "blue";
+              Serial.println ("Blue");
             }else if (gHeader.indexOf("GET /update?color=green") >= 0) {
               gButtonClicked = "green";
+              Serial.println ("Green");
             }else if (gHeader.indexOf("GET /update?color=yellow") >= 0) {
               gButtonClicked = "yellow";
+              Serial.println ("Yellow");
             }else if (gHeader.indexOf("GET /update?color=cyan") >= 0) {
               gButtonClicked = "cyan";
+              Serial.println ("Cyan");  
             }else if (gHeader.indexOf("GET /update?color=orange") >= 0) {
               gButtonClicked = "orange";
+              Serial.println ("Orange");
             }else if (gHeader.indexOf("GET /update?color=white") >= 0) {
               gButtonClicked = "white";
+              Serial.println ("White");
             }
             // Display the HTML web page, using the TemplatePrinter to make it a little easier to deal with.
             TemplatePrinter printer(client, RadioProcessor);  

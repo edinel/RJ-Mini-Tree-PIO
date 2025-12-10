@@ -3,7 +3,7 @@
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
 <head>
-  <title>Backyard Sparkle Lights</title>
+  <title>RJ's Mini-Tree Lights</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
   %CSS_CODE%

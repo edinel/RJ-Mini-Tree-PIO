@@ -18,7 +18,6 @@
 #define COLOR_ORDER GRB
 #define BRIGHTNESS          100  
 #define FRAMES_PER_SECOND  120
-#define NUM_FUNCTIONS 4
 #define hostname "RJ-Mini-Tree"
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
@@ -35,7 +34,7 @@ CRGBArray<NUM_LEDS_1> leds_1;
 String gButtonClicked = "off"; // Start the system at "off"
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint8_t gHue = 111; // rotating "base color" used by many of the patterns
-int gLoopCounter = 0;
+
 
 bool debug = true;
 
@@ -96,7 +95,7 @@ const long timeoutTime = 2000;
 
 
 
-void Connect_to_Wifi() {
+void connectToWifi() {
   int status = WL_IDLE_STATUS;
   Serial.print("Attempting to connect to WiFi, ");
   Serial.print("SSID ");
@@ -111,7 +110,7 @@ void Connect_to_Wifi() {
 
 }
 
-void Print_Wifi_Status() {
+void printWifiStatus() {
   // print the SSID of the network you're attached to:
   Serial.print("SSID: ");
   Serial.println(WiFi.SSID());
@@ -132,12 +131,6 @@ String isThisOn (String color){
   }else{
     return "";
   }
-}
-
-void nextPattern()
-{
-  // add one to the current pattern number, and wrap around at the end
-  gCurrentPatternNumber = (gCurrentPatternNumber + 1) % NUM_FUNCTIONS;
 }
 
 void rainbow() 
@@ -192,8 +185,8 @@ void sinelon()
     fadeToBlackBy( leds_2, NUM_LEDS_2, 20);
     int pos2 = beatsin16( 13, 0, NUM_LEDS_2-1 );
     leds_2[pos2] += CHSV( gHue, 255, 192);
-    Serial.println ("sinelon");
   #endif
+    Serial.println ("sinelon");
 }
 
 void coolLikeIncandescent( CRGB& c, uint8_t phase)
@@ -388,23 +381,23 @@ bool RadioProcessor (Print& output, const char *param){
 void UpdatePalette (){
  if (gButtonClicked == "red"){
     gCurrentPalette = RetroC9_p;
-    Serial.println ("REd");
-  }else if (gButtonClicked == "blue"){
+    Serial.println ("Red");
+  }else if (gButtonClicked == "Blue"){
     gCurrentPalette = BlueWhite_p;
     Serial.println ("Blue");
-  }else if (gButtonClicked == "green"){
+  }else if (gButtonClicked == "Green"){
     gCurrentPalette = RedGreenWhite_p;
     Serial.println ("green");
-  }else if (gButtonClicked == "yellow"){
+  }else if (gButtonClicked == "Yellow"){
     gCurrentPalette = PartyColors_p;
     Serial.println ("yellow");
-  }else if (gButtonClicked == "cyan"){
+  }else if (gButtonClicked == "Cyan"){
     gCurrentPalette = Snow_p;
     Serial.println ("cyan");
-  }else if (gButtonClicked == "white"){
+  }else if (gButtonClicked == "White"){
     gCurrentPalette = FairyLight_p;
     Serial.println ("white");
-  }else if (gButtonClicked == "orange"){
+  }else if (gButtonClicked == "Orange"){
     gCurrentPalette = Halloween_p; 
     Serial.println ("Orange");
   }else{ //we're in an unknown state or "off"
@@ -444,17 +437,18 @@ void setup() {
   FastLED.show();
 
   // SET UP WIFI 
-   Connect_to_Wifi();  // Like it says
+   connectToWifi();  // Like it says
   if (debug) { Print_Wifi_Status(); }
   sleep (3);
   gWiFiServer.begin();
   FastLED.clear(); //we're exiting the setup, which means we got a wifi connection and the server's started, so turn off those lights.  
   FastLED.show();
-  Serial.println ("Exting setup");
+  Serial.println ("Exiting setup");
   Serial.flush();
 }
 
 void loop() {
+  // == First, handle incoming HTTP requests ==
   WiFiClient client = gWiFiServer.available();   // Listen for incoming clients
   if (client) {                             // If a new client connects,
     currentTime = millis();
@@ -521,7 +515,7 @@ void loop() {
     // Close the connection
     client.stop();
   }
-  
+  // == Update the LED based on what we heard from the webserver ==
   UpdatePalette(); //based on what we know, set the palette properly.
   drawTwinkles(leds_1);
   #ifdef TWO_STRINGS
@@ -529,82 +523,4 @@ void loop() {
   #endif 
   FastLED.show(); 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-void bpm()
-{
-  // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
-  uint8_t BeatsPerMinute = 62;
-  CRGBPalette16 palette = PartyColors_p;
-  uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
-  for( int i = 0; i < NUM_LEDS_1; i++) { //9948
-    leds_1[i] = ColorFromPalette(palette, gHue+(i*2), beat-gHue+(i*10));
-  }
-  for( int i = 0; i < NUM_LEDS_2; i++) { //9948
-    leds_2[i] = ColorFromPalette(palette, gHue+(i*2), beat-gHue+(i*10));
-  }
-
-}
-
-void juggle() {
-  // eight colored dots, weaving in and out of sync with each other
-  fadeToBlackBy( leds_1, NUM_LEDS_1, 20);
-  uint8_t dothue = 0;
-  for( int i = 0; i < 8; i++) {
-    leds_1[beatsin16( i+7, 0, NUM_LEDS_1-1 )] |= CHSV(dothue, 200, 255);
-    dothue += 32;
-  }
-
-fadeToBlackBy( leds_2, NUM_LEDS_2 20);
-  uint8_t dothue = 0;
-  for( int i = 0; i < 8; i++) {
-    leds_2[beatsin16( i+7, 0, NUM_LEDS_2-1 )] |= CHSV(dothue, 200, 255);
-    dothue += 32;
-  }
-
-
-}
-
-
-*/
-
-
-// HTML Code Ideas
-/*
-
-<a href="KFC.html" class="button">KFC</a>
- <a href="Pizza_hut.html" class="button">Pizza hut</a>
- 
- 
- 
- a.button { 
-   display: inline-block;
-   padding: 5px;
-   border: 1px solid #999;
-   background: #aaa;
-   color: #333;
-   text-decoration: none;
- }
-
-
-*/
-
-
 
